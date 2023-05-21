@@ -1,4 +1,4 @@
-import { View,StyleSheet, Image, FlatList } from 'react-native'
+import { View,StyleSheet, Image, FlatList,ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Searchbar} from 'react-native-paper';
@@ -37,7 +37,7 @@ export default function Note() {
     //const userId = localStorage.getItem('userId'); nned to uncomment after login completed
     const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
   
-    axios.get(`http://192.168.1.102:8080/note/get-notes-by-user-id/${userId}`)
+    axios.get(`http://192.168.1.101:8080/note/get-notes-by-user-id/${userId}`)
       // axios.get('http://localhost:8080/note/get-all')
       .then(function (response) {
         setData(response.data)
@@ -59,6 +59,8 @@ export default function Note() {
 
    <SafeAreaView style={styles.background}>
 
+<ScrollView style={styles.scrollView}>
+
   <View style={styles.container}>
 
         <View>
@@ -78,13 +80,13 @@ export default function Note() {
 
 </View>
 
-<View>
+<View style={styles.note_card}> 
 
-<FlatList
+<FlatList style={styles.shadowProp}
         data={data}
         renderItem={({item}) =>  
 
-<Card mode='elevated' >
+<Card mode='elevated' style={{marginBottom:10,borderRadius:15}}>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
     <Card.Content>
       <Text variant="titleLarge">{item.title}</Text>
@@ -103,14 +105,6 @@ export default function Note() {
 </View>
 
 <View style={styles.addBtn}>
-{/* {/* <IconButton
-mode='contained'
-    icon="plus"
-    iconColor = "white"
-    containerColor ="blue"
-    size={20}
-    onPress={() => console.log('Pressed')}
-  /> */}
 
 <AnimatedFAB
         icon={'plus'}
@@ -125,7 +119,7 @@ mode='contained'
 
       </View> 
 
-
+</ScrollView>
     
    </SafeAreaView>
 
@@ -195,4 +189,20 @@ const styles = StyleSheet.create({
         backgroundColor:'darkblue',
        
       },
+      note_card: {
+        backgroundColor: 'white',  
+    borderRadius: 8,  
+    paddingVertical: 45,  
+    paddingHorizontal: 25,  
+    width: '100%',  
+    marginVertical: 10, 
+      },
+      shadowProp: {  
+        shadowOffset: {width: -2, height: 4},  
+        shadowColor: '#171717',  
+        shadowOpacity: 0.2,  
+        shadowRadius: 3, 
+        elevation: 5, 
+      
+      },  
 })
