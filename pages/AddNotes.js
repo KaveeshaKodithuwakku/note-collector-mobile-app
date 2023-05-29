@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, ImageBackground } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, TextInput } from 'react-native-paper';
 import { IconButton, MD3Colors } from 'react-native-paper';
-import { Axios } from 'axios';
+import { launchImageLibrary } from 'react-native-image-picker';
+import axios from 'axios';
+
 
 
 export default function AddNotes({ navigation }) {
@@ -13,6 +15,7 @@ export default function AddNotes({ navigation }) {
     const [date, setDate] = React.useState("");
     const [userId, setUserId] = React.useState("");
     const [image, setImage] = React.useState("");
+    const [imageName, setImageName] = React.useState("");
     const [favorite, setFavorite] = useState(false);
 
 
@@ -23,6 +26,34 @@ export default function AddNotes({ navigation }) {
     useEffect(() => {
         setDate(currDate + " " + currTime);
     }, [])
+
+    const handleSelectImage = async () => {
+        const options = {
+          mediaType: 'photo',
+          selectionLimit: 1,
+          includeBase64: false,
+        }
+
+        try {
+          const result = await launchImageLibrary(options);
+    
+          if (result.didCancel) {
+            console.log('Cancelled');
+          } else if (result.errorCode) {
+            console.log("code - "+result.errorCode);
+          } else if (result.errorMessage) {
+            console.log("msg - "+result.errorMessage);
+          } else if (result.assets) {
+              setImage(result.assets[0]);
+              setImageName(result.assets[0].fileName);
+          } else {
+            console.log('No assets');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    
 
     const showToast = (msg) => {
         ToastAndroid.show(msg, ToastAndroid.SHORT);
@@ -40,8 +71,11 @@ export default function AddNotes({ navigation }) {
         formData.append('description', description)
         formData.append('dateTime', date)
         formData.append('favorite', favorite)
-        formData.append('image', image);
-
+        formData.append('image', {
+            uri: image.uri,
+            type: image.type,
+            name: image.fileName
+          })
 
         if (title.trim().length > 0 || description.trim().length > 0) {
             await axios({
@@ -85,7 +119,7 @@ export default function AddNotes({ navigation }) {
                     <TextInput style={styles.text_box}
                         label="Title"
                         mode='outlined'
-                        onChangeText={title => setTitle(title)}
+                        onChangeText={text => setTitle(text)}
                     />
                 </View>
 
@@ -97,7 +131,7 @@ export default function AddNotes({ navigation }) {
                         multiline={true}
                         numberOfLines={5}
                         //   value={title}
-                        onChangeText={description => setDescription(description)}
+                        onChangeText={text => setDescription(text)}
                     />
                 </View>
 
@@ -106,21 +140,21 @@ export default function AddNotes({ navigation }) {
                         <TextInput
                             label="Image"
                             mode='outlined'
-                            // value={title}
-                            onChangeText={text => setTitle(title)}
+                            value={imageName}
+                       
                         />
                     </View>
 
-                    <View>
+                    <TouchableOpacity>
                         <IconButton style={{ justifyContent: 'center', alignContent: 'center', marginTop: 32 }}
-                            icon="paperclip"
+                            icon="image"
                             mode='contained'
                             iconColor='white'
                             backgroundColor='purple'
                             size={30}
-                            onPress={() => console.log('Pressed')}
+                            onPress={handleSelectImage}
                         />
-                    </View>
+                    </TouchableOpacity>
                 </View>
 
                 <View>
@@ -130,10 +164,10 @@ export default function AddNotes({ navigation }) {
                 </View>
 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <ImageBackground style={styles.logo} source={require("../assets/images/note.png")} resizeMode="cover" >
-
-                    </ImageBackground>
+                <ImageBackground style={styles.logo} source={require("../assets/images/note.png")} resizeMode="cover" >
+</ImageBackground>
                 </View>
+               
             </View>
 
         </SafeAreaView>
@@ -182,8 +216,8 @@ const styles = StyleSheet.create({
         display: 'flex',
     },
     textimage_box: {
-        width: '80%',
-        height: 40,
+        width: '78%',
+        height: 60,
         marginLeft: 20,
         marginTop: 10,
         borderRadius: 10,
