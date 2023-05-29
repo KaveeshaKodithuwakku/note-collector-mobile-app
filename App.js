@@ -1,16 +1,12 @@
-import { View, Text } from 'react-native'
 import React from 'react'
-import { Provider as PaperProvider } from 'react-native-paper';
-import { Button } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import SignUp from './pages/SignUp';
 import WelcomeScreen from './pages/WelcomeScreen';
 import Login from './pages/Login';
-import Note from './pages/Note';
-import Settings from './pages/Settings';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeTabs from './components/HomeTabs';
+import AddNotes from './pages/AddNotes';
 
 
 const Stack = createStackNavigator();
@@ -42,6 +38,7 @@ export default function App() {
       <Stack.Screen options={{headerShown: false}} name="Login" component={Login} />
       <Stack.Screen options={{headerShown: false}} name="SignUp" component={SignUp} />
       <Stack.Screen options={{headerShown: false}}  name="Home" component={HomeTabs} /> 
+      <Stack.Screen  name="Add Notes" component={AddNotes} /> 
      
    </Stack.Navigator> 
   

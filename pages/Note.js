@@ -1,15 +1,17 @@
-import { View,StyleSheet, Image, FlatList,ScrollView } from 'react-native'
+import { View, StyleSheet, Image, FlatList, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Searchbar} from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 import { AnimatedFAB } from 'react-native-paper';
-import { Avatar, Button, Card, Text } from 'react-native-paper';
+import { Avatar, Card, Text } from 'react-native-paper';
 import axios from "axios";
-
+import { IconButton, MD3Colors } from 'react-native-paper';
+import NoteList from '../components/NoteList';
+import AddButton from '../components/AddButton';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
-export default function Note() {
+export default function Note({ navigation }) {
 
   const [greet, setGreet] = useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -31,97 +33,116 @@ export default function Note() {
   }
 
 
-  //get all data
-  const loadData = () => {
 
-    //const userId = localStorage.getItem('userId'); nned to uncomment after login completed
-    const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
-  
-    axios.get(`http://192.168.1.101:8080/note/get-notes-by-user-id/${userId}`)
-      // axios.get('http://localhost:8080/note/get-all')
+  //delete data by id
+  // const deleteRow = (id, e) => {
+  //   e.preventDefault();
+
+  //   Swal.fire({
+  //     title: 'Are you sure?',
+  //     text: "You won't be able to revert this!",
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#3085d6',
+  //     cancelButtonColor: '#d33',
+  //     confirmButtonText: 'Yes, delete it!',
+  //     reverseButtons: true
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios.delete(`http://localhost:8080/note/delete-note/${id}`)
+  //         .then(function (response) {
+  //           Swal.fire(
+  //             'Deleted!',
+  //             'Your note has been deleted.',
+  //             'success'
+  //           )
+  //           loadData();
+  //         })
+  //         .catch(function (error) {
+  //           // handle error
+  //           console.log(error);
+  //           Swal.fire({
+  //             icon: 'error',
+  //             title: 'Oops...',
+  //             text: 'Something went wrong!',
+  //           })
+  //         })
+  //     }
+  //   })
+  // }
+
+
+  const updateIsFavorite = (id, status, e) => {
+
+    if (e.target.checked) {
+      status = 1;
+      console.log('true')
+    } else {
+      status = 0
+      console.log('false')
+    }
+
+    e.preventDefault();
+    // console.log(`http://localhost:8080/note/update-note-favorite/${id}/${status}`);
+
+    axios.put(`http://192.168.8.103/note/update-note-favorite/${id}/${status}`)
       .then(function (response) {
-        setData(response.data)
+        if (status === 1) {
+          // swal("Note added to favorite list", "", "success", {
+          //   button: "Ok",
+
+          // });
+        } else if (status === 0) {
+          // swal("Note remove from favorite list", "", "success", {
+          //   button: "Ok",
+
+          // });
+        }
+        loadData();
       })
       .catch(function (error) {
         // handle error
         console.log(error);
+        // Swal.fire({
+        //   icon: 'error',
+        //   title: 'Oops...',
+        //   text: 'Something went wrong!',
+
+        // })
       })
+
   }
+
 
   useEffect(() => {
     findGreet();
-    loadData();
   }, [])
 
 
   return (
 
-
-   <SafeAreaView style={styles.background}>
-
-<ScrollView style={styles.scrollView}>
-
-  <View style={styles.container}>
-
+    <SafeAreaView style={styles.background}>
+      <View style={styles.container}>
         <View>
           <Text style={styles.header}>{`Good ${greet}`}</Text>
         </View>
 
         <View style={styles.serach_container}>
-        <Searchbar style={{backgroundColor: 'white',borderColor: 'gray',borderWidth:0.5,height:52}}
-      placeholder="Search"
-      onChangeText={onChangeSearch}
-      value={searchQuery}
-    />
+          <Searchbar style={{ backgroundColor: 'white', borderColor: 'gray', borderWidth: 0.5, height: 52 }}
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+          />
         </View>
+      </View>
 
-<View style={styles.emptyHeaderContainer}>
-<Text style={styles.emptyHeader}>Add Notes</Text>
+      <ScrollView style={styles.scrollView}>
+        <NoteList type='normal' />
+      </ScrollView>
 
-</View>
+      <AddButton />
 
-<View style={styles.note_card}> 
-
-<FlatList style={styles.shadowProp}
-        data={data}
-        renderItem={({item}) =>  
-
-<Card mode='elevated' style={{marginBottom:10,borderRadius:15}}>
-    <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-    <Card.Content>
-      <Text variant="titleLarge">{item.title}</Text>
-      <Text variant="bodyMedium">{item.description}</Text>
-    </Card.Content>
-    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-    <Card.Actions>
-      <Button>Cancel</Button>
-      <Button>Ok</Button>
-    </Card.Actions>
-  </Card>
-        
-  }
-  keyExtractor={item => item.id}
-      />
-</View>
-
-<View style={styles.addBtn}>
-
-<AnimatedFAB
-        icon={'plus'}
-        label={'Label'}
-        color ="white"
-        onPress={() => console.log('Pressed')}
-        iconMode={'static'}
-        style={[styles.fabStyle]}
-      />
-
-</View>
-
-      </View> 
-
-</ScrollView>
-    
-   </SafeAreaView>
+    </SafeAreaView>
 
 
   )
@@ -136,73 +157,24 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   background: {
-    backgroundColor:'white',
-    height:'100%',
-   },
-   container: {
-     backgroundColor:'white',
-   },
-   serachbar: {
+    backgroundColor: 'white',
+    height: '100%',
+  },
+  container: {
+    backgroundColor: 'white',
+  },
+  serachbar: {
     borderWidth: 0.5,
     borderColor: 'gray',
-    height:40,
+    height: 40,
     borderRadius: 40,
-    marginVertical:15,
-    fontSize:20,
+    marginVertical: 15,
+    fontSize: 20,
   },
   serach_container: {
     justifyContent: 'center',
     alignItems: 'center',
-    margin:20,
-    backgroundColor:'white',
-  },
-  emptyHeader: {
-  fontSize:30,
-  textTransform:'uppercase',
-  fontWeight:'bold',
-  color:'gray',
-  justifyContent:'center',
-  alignItems:'center',
-  },
-  emptyHeaderContainer: {
-    flexDirection:'column',
-    justifyContent:'center',
-    alignItems:'center',
-    width:'100%',
-    },
-    addBtn: {
-   
-    display:'flex',
-    bottom:0,
-    right:0,
-    position:'absolute',
-    marginRight: 24,
-    marginBottom:15,
-    alignItems:'center',
-    justifyContent:'center',
-    shadowColor:'gray'
-      },
-      fabStyle: {
-        bottom: 16,
-        right: 16,
-        position: 'absolute',
-        backgroundColor:'darkblue',
-       
-      },
-      note_card: {
-        backgroundColor: 'white',  
-    borderRadius: 8,  
-    paddingVertical: 45,  
-    paddingHorizontal: 25,  
-    width: '100%',  
-    marginVertical: 10, 
-      },
-      shadowProp: {  
-        shadowOffset: {width: -2, height: 4},  
-        shadowColor: '#171717',  
-        shadowOpacity: 0.2,  
-        shadowRadius: 3, 
-        elevation: 5, 
-      
-      },  
+    margin: 20,
+    backgroundColor: 'white',
+  }
 })
