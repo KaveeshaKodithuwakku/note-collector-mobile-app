@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeTabs from './components/HomeTabs';
 import AddNotes from './pages/AddNotes';
+import EditNotes from './pages/EditNotes';
 
 
 const Stack = createStackNavigator();
@@ -39,6 +40,7 @@ export default function App() {
       <Stack.Screen options={{headerShown: false}} name="SignUp" component={SignUp} />
       <Stack.Screen options={{headerShown: false}}  name="Home" component={HomeTabs} /> 
       <Stack.Screen  name="Add Notes" component={AddNotes} /> 
+      <Stack.Screen  name="Edit Notes" component={EditNotes} /> 
      
    </Stack.Navigator> 
   
