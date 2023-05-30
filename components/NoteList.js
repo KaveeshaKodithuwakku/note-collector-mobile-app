@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, FlatList,Alert } from 'react-native'
 import axios from "axios";
 import { IconButton, MD3Colors, Avatar, Card, Text } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
@@ -9,6 +10,7 @@ const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 export default function NoteList(props) {
 
     const [noteDate, setNoteData] = useState([]);
+    const navigation = useNavigation();
 
     useEffect(() => {
         if (props.type === 'normal') {
@@ -123,7 +125,13 @@ export default function NoteList(props) {
                                 mode='outlined'
                                 iconColor={MD3Colors.error50}
                                 size={20}
-                                onPress={() => console.log('Pressed')}
+                                onPress={() =>  {
+                                    /* 1. Navigate to the Details route with params */
+                                    navigation.navigate('Edit Notes', {
+                                      itemId: item.note_id,
+                                      otherParam: 'anything you want here',
+                                    });
+                                  }}
                             />
                             <IconButton
                                 icon="delete"

@@ -1,7 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Button, IconButton, TextInput } from 'react-native-paper';
 
-export default function EditNotes() {
+
+export default function EditNotes({ navigation, route }) {
+
+    const { itemId, otherParam } = route.params;
 
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
@@ -124,7 +129,7 @@ export default function EditNotes() {
     <View style={{ backgroundColor: 'white' }}>
 
         <View>
-            <Text style={styles.title} variant="displayMedium">Add Note</Text>
+            <Text style={styles.title} variant="displayMedium">Edit Note</Text>
         </View>
 
         <View>
