@@ -1,13 +1,16 @@
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, IconButton, TextInput } from 'react-native-paper';
+import axios from 'axios';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 
 export default function EditNotes({ navigation, route }) {
 
-    const { itemId, otherParam } = route.params;
+    const noteId = route.params.itemId;
 
+    const [noteData, setNoteData] = React.useState("");
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [date, setDate] = React.useState("");
@@ -22,7 +25,8 @@ export default function EditNotes({ navigation, route }) {
 
 
     useEffect(() => {
-        getNoteById();
+    
+        getNoteById(noteId);
         setDate(currDate + " " + currTime);
     }, [])
 
@@ -60,14 +64,14 @@ export default function EditNotes({ navigation, route }) {
 
     
 
-    const getNoteById = async () => {
+    const getNoteById = async (id) => {
 
         await axios.get(`http://192.168.1.100:8080/note/get-note/${id}`)
             .then(response => {
                 setNoteData(response.data);
                 setTitle(response.data.title)
                 setDescription(response.data.description)
-                setImage(response.data.image)
+                setImage(response.data.file_path)
                 setFavorite(response.data.favorite)
             })
             .catch(err => {
@@ -75,10 +79,11 @@ export default function EditNotes({ navigation, route }) {
             });
     }
 
-    const handleSave = async () => {
+    const handleUpdate = async (id,e) => {
+
+        e.preventDefault();
         const formData = new FormData();
 
-        
         const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
 
         formData.append('userId', userId)
@@ -87,13 +92,15 @@ export default function EditNotes({ navigation, route }) {
         formData.append('description', description)
         formData.append('dateTime', date)
         formData.append('favorite', favorite)
+        console.log("uri" + image.uri);
         formData.append('image', {
             uri: image.uri,
             type: image.type,
             name: image.fileName
           })
-
+        
         if (title.trim().length > 0 || description.trim().length > 0) {
+           
             await axios({
                 method: "put",
                 url: `http://192.168.1.100:8080/note/update-note/${id}`,
@@ -102,9 +109,9 @@ export default function EditNotes({ navigation, route }) {
             })
                 .then(function (response) {
                     console.log(response.data);
-                    showToast('Note save sucessfully');
+                    showToast('Note update sucessfully');
                     clearFeilds();
-                    //navigation.navigate('Home')
+                    navigation.navigate('Home')
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -176,8 +183,8 @@ export default function EditNotes({ navigation, route }) {
         </View>
 
         <View>
-            <Button style={styles.button} icon="plus" mode="contained" onPress={handleSave}>
-                Save Note
+            <Button style={styles.button} icon="plus" mode="contained" onPress={(e) => handleUpdate(noteId,e)}>
+                Update Note
             </Button>
         </View>
 

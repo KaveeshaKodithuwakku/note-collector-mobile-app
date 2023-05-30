@@ -128,8 +128,8 @@ export default function NoteList(props) {
                                 onPress={() =>  {
                                     /* 1. Navigate to the Details route with params */
                                     navigation.navigate('Edit Notes', {
-                                      itemId: item.note_id,
-                                      otherParam: 'anything you want here',
+                                      itemId:  item.noteId,
+                                
                                     });
                                   }}
                             />
