@@ -85,7 +85,7 @@ export default function Note({ navigation }) {
     e.preventDefault();
     // console.log(`http://localhost:8080/note/update-note-favorite/${id}/${status}`);
 
-    axios.put(`http://192.168.8.103/note/update-note-favorite/${id}/${status}`)
+    axios.put(`http://192.168.1.100/note/update-note-favorite/${id}/${status}`)
       .then(function (response) {
         if (status === 1) {
           // swal("Note added to favorite list", "", "success", {

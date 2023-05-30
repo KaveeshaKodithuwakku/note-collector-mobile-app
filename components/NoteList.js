@@ -24,7 +24,7 @@ export default function NoteList(props) {
 
         const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
 
-        await axios.get(`http://192.168.1.101:8080/note/get-notes-by-user-id/${userId}`)
+        await axios.get(`http://192.168.1.100:8080/note/get-notes-by-user-id/${userId}`)
             .then(response => {
                 setNoteData(response.data);
             })
@@ -37,7 +37,7 @@ export default function NoteList(props) {
 
         const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
 
-        await axios.get(`http://192.168.1.101:8080/note/get-all-favorites/${userId}`)
+        await axios.get(`http://192.168.1.100:8080/note/get-all-favorites/${userId}`)
             .then(response => {
                 setNoteData(response.data);
             })
@@ -50,7 +50,7 @@ export default function NoteList(props) {
 
         e.preventDefault();
      
-        axios.delete(`http://192.168.1.101:8080/note/delete-note/${id}`)
+        axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
             .then((response) => {
                 console.log(response.data);
                getAllNotes();
@@ -83,7 +83,7 @@ export default function NoteList(props) {
 
         e.preventDefault();
      
-        axios.delete(`http://192.168.1.101:8080/note/delete-note/${id}`)
+        axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
             .then((response) => {
                 console.log(response.data);
                getAllNotes();
