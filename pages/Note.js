@@ -1,12 +1,8 @@
-import { View, StyleSheet, Image, FlatList, ScrollView, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, FlatList, ScrollView, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Searchbar } from 'react-native-paper';
-import { AnimatedFAB } from 'react-native-paper';
-import { Avatar, Card, Text } from 'react-native-paper';
+import { IconButton, MD3Colors, Avatar, Card, Text,Searchbar } from 'react-native-paper';
 import axios from "axios";
-import { IconButton, MD3Colors } from 'react-native-paper';
-import NoteList from '../components/NoteList';
 import AddButton from '../components/AddButton';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
@@ -16,7 +12,8 @@ export default function Note({ navigation }) {
   const [greet, setGreet] = useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [isExtended, setIsExtended] = React.useState(true);
-  const [data, setData] = useState([]);
+  const [noteDate, setNoteData] = useState([]);
+
 
   const onChangeSearch = query => setSearchQuery(query);
 
@@ -33,89 +30,75 @@ export default function Note({ navigation }) {
   }
 
 
+  const getAllNotes = async () => {
 
-  //delete data by id
-  // const deleteRow = (id, e) => {
-  //   e.preventDefault();
+    const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
 
-  //   Swal.fire({
-  //     title: 'Are you sure?',
-  //     text: "You won't be able to revert this!",
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#3085d6',
-  //     cancelButtonColor: '#d33',
-  //     confirmButtonText: 'Yes, delete it!',
-  //     reverseButtons: true
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios.delete(`http://localhost:8080/note/delete-note/${id}`)
-  //         .then(function (response) {
-  //           Swal.fire(
-  //             'Deleted!',
-  //             'Your note has been deleted.',
-  //             'success'
-  //           )
-  //           loadData();
-  //         })
-  //         .catch(function (error) {
-  //           // handle error
-  //           console.log(error);
-  //           Swal.fire({
-  //             icon: 'error',
-  //             title: 'Oops...',
-  //             text: 'Something went wrong!',
-  //           })
-  //         })
-  //     }
-  //   })
-  // }
+    await axios.get(`http://192.168.1.101:8080/note/get-notes-by-user-id/${userId}`)
+        .then(response => {
+            setNoteData(response.data);
+        })
+        .catch(err => {
+            console.error(err);
+        }) 
+       
+}
 
+const getFavoriteNotes = async () => {
 
-  const updateIsFavorite = (id, status, e) => {
+    const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
 
-    if (e.target.checked) {
-      status = 1;
-      console.log('true')
-    } else {
-      status = 0
-      console.log('false')
-    }
+    await axios.get(`http://192.168.1.101:8080/note/get-all-favorites/${userId}`)
+        .then(response => {
+            setNoteData(response.data);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+const handleDeleteNote = (id, e) => {
 
     e.preventDefault();
-    // console.log(`http://localhost:8080/note/update-note-favorite/${id}/${status}`);
+ 
+    axios.delete(`http://192.168.1.101:8080/note/delete-note/${id}`)
+        .then((response) => {
+            console.log(response.data);
+           getAllNotes();
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 
-    axios.put(`http://192.168.1.100/note/update-note-favorite/${id}/${status}`)
-      .then(function (response) {
-        if (status === 1) {
-          // swal("Note added to favorite list", "", "success", {
-          //   button: "Ok",
+const handleDeleteIconPress = (nId,e) => {
+  Alert.alert(
+        "Delete Note..!",
+        "Are you sure ?",
+        [
+            {
+                text: "Yes",
+                onPress: () => {
+                    handleDeleteNote(nId,e);
+                },
+            },
+            {
+                text: "No",
+            },
+        ]
+    );
+}
 
-          // });
-        } else if (status === 0) {
-          // swal("Note remove from favorite list", "", "success", {
-          //   button: "Ok",
 
-          // });
-        }
-        loadData();
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-        // Swal.fire({
-        //   icon: 'error',
-        //   title: 'Oops...',
-        //   text: 'Something went wrong!',
+const GoNext = (props) => {
+  navigation.navigate('Edit Notes', props);
+}
 
-        // })
-      })
-
-  }
 
 
   useEffect(() => {
     findGreet();
+    getAllNotes();
   }, [])
 
 
@@ -137,10 +120,48 @@ export default function Note({ navigation }) {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        <NoteList type='normal' />
+      <FlatList style={styles.noteList}
+                data={noteDate}
+                keyExtractor={item => item.noteId}
+                renderItem={({ item }) =>
+
+                    <Card mode='elevated' style={styles.shadowProp}>
+                        <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
+                        <Card.Content>
+                            <Text variant="titleLarge">{item.title}</Text>
+                            <Text variant="bodyMedium">{item.description}</Text>
+                        </Card.Content>
+                        <Card.Cover source={{ uri: axios.defaults.baseURL + 'http://192.168.1.101:8080/note/download/' + item.image }} />
+                        <Card.Actions>
+                            <IconButton
+                                icon="heart"
+                                mode='outlined'
+                                iconColor={MD3Colors.error50}
+                                size={20}
+                                onPress={() => console.log('Pressed')}
+                            />
+                            <IconButton
+                                icon="pen"
+                                mode='outlined'
+                                iconColor={MD3Colors.error50}
+                                size={20}
+                                onPress={GoNext(noteId = item.noteId, onLoad = {getAllNotes})}
+                            />
+                            <IconButton
+                                icon="delete"
+                                mode='outlined'
+                                iconColor={MD3Colors.error50}
+                                size={20}
+                                onPress={(e) => handleDeleteIconPress( item.noteId,e)}
+                            />
+                        </Card.Actions>
+                    </Card>
+
+                }
+                />
       </ScrollView>
 
-      <AddButton />
+      <AddButton onLoad={getAllNotes}/>
 
     </SafeAreaView>
 
@@ -176,5 +197,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 20,
     backgroundColor: 'white',
-  }
+  },note_card: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingVertical: 45,
+    paddingHorizontal: 25,
+    width: '100%',
+    marginVertical: 10,
+
+},
+shadowProp: {
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: '#171717',
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
+    marginBottom: 10,
+},
+noteList: {
+    marginLeft: 20,
+    marginRight: 20,
+}
 })

@@ -31,6 +31,26 @@ export default function HomeTabs() {
             <AwesomeIcon  name="heart" color={color} size={18} ></AwesomeIcon >
           ),
         }}/>
+{/* 
+<Tab.Screen  name="Favorite" component={AddNotes} options={{
+          tabBarIcon: ({ focused }) => (
+            <TouchableOpacity>
+              <View style={styles.round_icon}>
+              <Image
+        style={styles.plus_icon}
+        source={require('@expo/snack-static/react-native-logo.png')}
+      />
+              </View>
+            </TouchableOpacity>
+          )
+        }}/> */}
+
+{/* <Tab.Screen  name="Profile" component={Profile} options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color }) => (
+            <AwesomeIcon  name="user" color={color} size={26} ></AwesomeIcon >
+          ),
+        }}/> */}
 
 <Tab.Screen  name="Settings" component={Settings} options={{
           tabBarLabel: 'Settings',

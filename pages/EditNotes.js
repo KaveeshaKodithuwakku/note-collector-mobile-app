@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, ToastAndroid, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, IconButton, TextInput } from 'react-native-paper';
@@ -9,6 +9,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 export default function EditNotes({ navigation, route }) {
 
     const noteId = route.params.itemId;
+    const refresh = route.params.onLoad;
 
     const [noteData, setNoteData] = React.useState("");
     const [title, setTitle] = React.useState("");
@@ -17,6 +18,7 @@ export default function EditNotes({ navigation, route }) {
     const [userId, setUserId] = React.useState("");
     const [image, setImage] = React.useState("");
     const [imageName, setImageName] = React.useState("");
+    const [previousImage, setPreviousImage] = React.useState("");
     const [favorite, setFavorite] = useState(false);
 
 
@@ -66,13 +68,15 @@ export default function EditNotes({ navigation, route }) {
 
     const getNoteById = async (id) => {
 
-        await axios.get(`http://192.168.1.100:8080/note/get-note/${id}`)
+        await axios.get(`http://192.168.1.101:8080/note/get-note/${id}`)
             .then(response => {
                 setNoteData(response.data);
-                setTitle(response.data.title)
-                setDescription(response.data.description)
-                setImage(response.data.file_path)
-                setFavorite(response.data.favorite)
+                setTitle(response.data.title);
+                setDescription(response.data.description);
+                setImage(response.data.image);
+                setImageName(response.data.file_path);
+                setPreviousImage(response.data.file_path);
+                setFavorite(response.data.favorite);
             })
             .catch(err => {
                 console.error(err);
@@ -82,6 +86,43 @@ export default function EditNotes({ navigation, route }) {
     const handleUpdate = async (id,e) => {
 
         e.preventDefault();
+    
+        if ((title.trim().length > 0 || description.trim().length > 0) && imageName === previousImage) {
+            updateNoteTitleAndDescription(id);
+        }else{
+            updateNoteWithImage(id);
+        }
+    }
+
+
+    const updateNoteTitleAndDescription = (id) => {
+    
+        const data = {
+          noteId: noteId,
+          userId:userId,
+          title: title,
+          description: description,
+          dateTime: date,
+        }
+      
+        axios.put(`http://192.168.1.101:8080/note/update-note-without-image/${id}`, data)
+        .then(response => {
+            console.log('All requests were completed');
+            clearFeilds();
+            showToast('Note update sucessfully');
+            navigation.navigate('Home');
+            route.params.onLoad();
+          })
+          .catch((error) => {
+            console.error(error);
+            showToast('Note update failed');
+          })
+         
+      }
+
+
+      const updateNoteWithImage = async (id) => {
+      
         const formData = new FormData();
 
         const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
@@ -98,29 +139,26 @@ export default function EditNotes({ navigation, route }) {
             type: image.type,
             name: image.fileName
           })
-        
-        if (title.trim().length > 0 || description.trim().length > 0) {
-           
-            await axios({
+          console.log("id" + id);
+           axios({
                 method: "put",
-                url: `http://192.168.1.100:8080/note/update-note/${id}`,
+                url: `http://192.168.1.101:8080/note/update-note/${id}`,
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             })
                 .then(function (response) {
                     console.log(response.data);
-                    showToast('Note update sucessfully');
                     clearFeilds();
-                    navigation.navigate('Home')
+                    navigation.navigate('Home');
+                    showToast('Note update sucessfully');
+                    route.params.onLoad();
                 })
                 .catch(function (error) {
                     console.log(error);
-                    showToast('Note save failed');
+                    showToast('Note update failed');
                 })
-        } else {
-            Alert.alert('Please add a title or description');
-        }
-    }
+       
+      }
 
     const clearFeilds = () => {
         setTitle('');

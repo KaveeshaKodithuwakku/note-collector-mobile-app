@@ -41,7 +41,6 @@ export default function App() {
       <Stack.Screen options={{headerShown: false}}  name="Home" component={HomeTabs} /> 
       <Stack.Screen  name="Add Notes" component={AddNotes} /> 
       <Stack.Screen  name="Edit Notes" component={EditNotes} /> 
-     
    </Stack.Navigator> 
   
     

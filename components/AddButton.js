@@ -3,12 +3,12 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 
 
-const AddButton = () => {
+const AddButton = (props) => {
 
     const navigation = useNavigation();
 
     const handleGoToAddNote = () => {
-        navigation.navigate('Add Notes');
+        navigation.navigate('Add Notes',props);
     }
 
     return (

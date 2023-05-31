@@ -3,24 +3,28 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Text } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
-
+import back from "../assets/images/Background_1.jpg"
 
 
 export default function WelcomeScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.background}>
 
-      <StatusBar
-        animated={true}
-        backgroundColor="#00134d"
-      />
-      <View style={styles.container}>
-        <ImageBackground style={styles.logo} source={require("../assets/images/welocme-img.png")} resizeMode="cover" >
+    <ImageBackground source={back} style={{flex:1}}>
+<SafeAreaView>
+
+<StatusBar
+  animated={true}
+  backgroundColor="#00134d"
+/>
+{/* 
+  <View style={styles.container}>
+       <ImageBackground style={styles.logo} source={require("../assets/images/welocme-img.png")} resizeMode="cover" >
 
         </ImageBackground>
-      </View>
+       </View> */}
 
-      <View>
+
+<View>
         <Text style={styles.title} variant="displayMedium">My Notes !</Text>
       </View>
 
@@ -37,30 +41,32 @@ export default function WelcomeScreen({ navigation }) {
           Sign Up
         </Button>
 
-      </View>
+      </View> 
+ 
 
-      {/* <View>
-<LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#0f1db1',   '#2a0fb1']} style={styles.linearGradient}>
-  <Text style={styles.buttonText}>
-    Sign in with Facebook
-  </Text>
-</LinearGradient>
-</View>
-       */}
+</SafeAreaView>
+    </ImageBackground>
+    
 
-    </SafeAreaView>
+      //  <View style={styles.container}>
+      //   <ImageBackground style={styles.logo} source={require("../assets/images/welocme-img.png")} resizeMode="cover" >
+
+      //   </ImageBackground>
+      // </View>
+
+
+   
+
+
 
   )
 }
 
 const styles = StyleSheet.create({
-  background: {
-    backgroundColor: 'white',
-    height: '100%'
-  },
+
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    
+   height:'100%'
   },
   logo: {
     width: 300,
@@ -72,7 +78,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 35,
     textAlign: 'center',
-    marginTop: 50,
+    marginTop: 200,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'

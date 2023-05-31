@@ -8,8 +8,9 @@ import axios from 'axios';
 
 
 
-export default function AddNotes({ navigation }) {
+export default function AddNotes({ navigation,route}) {
 
+    const loadData = route.params;
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [date, setDate] = React.useState("");
@@ -80,7 +81,7 @@ export default function AddNotes({ navigation }) {
         if (title.trim().length > 0 || description.trim().length > 0) {
             await axios({
                 method: "post",
-                url: "http://192.168.1.100:8080/note/save-notes",
+                url: "http://192.168.1.101:8080/note/save-notes",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             })
@@ -88,6 +89,7 @@ export default function AddNotes({ navigation }) {
                     console.log(response.data);
                     showToast('Note save sucessfully');
                     clearFeilds();
+                    loadData.onLoad();
                     navigation.navigate('Home')
                 })
                 .catch(function (error) {
