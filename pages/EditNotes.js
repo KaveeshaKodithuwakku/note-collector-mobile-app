@@ -110,8 +110,8 @@ export default function EditNotes({ navigation, route }) {
             console.log('All requests were completed');
             clearFeilds();
             showToast('Note update sucessfully');
-            navigation.navigate('Home');
-            route.params.onLoad();
+            navigation.replace('Home');
+            // route.params.onLoad();
           })
           .catch((error) => {
             console.error(error);
@@ -149,9 +149,9 @@ export default function EditNotes({ navigation, route }) {
                 .then(function (response) {
                     console.log(response.data);
                     clearFeilds();
-                    navigation.navigate('Home');
+                    navigation.replace('Home');
                     showToast('Note update sucessfully');
-                    route.params.onLoad();
+                    // route.params.onLoad();
                 })
                 .catch(function (error) {
                     console.log(error);
