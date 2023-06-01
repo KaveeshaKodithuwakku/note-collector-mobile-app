@@ -25,12 +25,12 @@ export default function HomeTabs() {
             <AwesomeIcon  name="home" color={color} size={18} ></AwesomeIcon >
           ),
         }}/>
-    <Tab.Screen  name="Favorite" component={FavoriteNotes} options={{
+    {/* <Tab.Screen  name="Favorite" component={FavoriteNotes} options={{
           tabBarLabel: 'Favorite',
           tabBarIcon: ({ color }) => (
             <AwesomeIcon  name="heart" color={color} size={18} ></AwesomeIcon >
           ),
-        }}/>
+        }}/> */}
 {/* 
 <Tab.Screen  name="Favorite" component={AddNotes} options={{
           tabBarIcon: ({ focused }) => (

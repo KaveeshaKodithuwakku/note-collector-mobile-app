@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image, FlatList, ScrollView, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState  } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconButton, MD3Colors, Avatar, Card, Text,Searchbar } from 'react-native-paper';
 import axios from "axios";
@@ -131,15 +131,15 @@ const GoNext = (props) => {
                             <Text variant="titleLarge">{item.title}</Text>
                             <Text variant="bodyMedium">{item.description}</Text>
                         </Card.Content>
-                        <Card.Cover source={{ uri: axios.defaults.baseURL + 'http://192.168.1.101:8080/note/download/' + item.image }} />
+                        <Card.Cover source={{ uri: `http://192.168.1.101:8080/note/download/${item.file_path}` }} />
                         <Card.Actions>
-                            <IconButton
+                            {/* <IconButton
                                 icon="heart"
                                 mode='outlined'
                                 iconColor={MD3Colors.error50}
                                 size={20}
                                 onPress={() => console.log('Pressed')}
-                            />
+                            /> */}
                             <IconButton
                                 icon="pen"
                                 mode='outlined'
