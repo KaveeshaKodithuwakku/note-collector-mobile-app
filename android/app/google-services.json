@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "547152119789",
+    "project_id": "react--note-collector-app",
+    "storage_bucket": "react--note-collector-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547152119789:android:ad220fd8e7ad443f8a09e4",
+        "android_client_info": {
+          "package_name": "com.note_collector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547152119789-gj8c03np21gvasr7lnc2ms54007lejp1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.note_collector",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "547152119789-ru1g1d2g7j16lba2982aelg3m8j7qfvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACQ-jovPTJT7JJRKyMhC8OP1xcAn5WrXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547152119789-3djfsvlgta4s6tgri4rsu559mokdirs2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

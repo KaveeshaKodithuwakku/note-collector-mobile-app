@@ -98,21 +98,6 @@ export default function NoteList(props) {
     }
 
 
-    const handleUpdateNote = (id, e) => {
-
-        e.preventDefault();
-     
-        axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
-            .then((response) => {
-                console.log(response.data);
-               getAllNotes();
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-
-
     return (
 
         <>
@@ -143,10 +128,8 @@ export default function NoteList(props) {
                                 iconColor={MD3Colors.error50}
                                 size={20}
                                 onPress={() =>  {
-                                    /* 1. Navigate to the Details route with params */
                                     navigation.navigate('Edit Notes', {
                                       itemId:  item.noteId,
-                                
                                     });
                                   }}
                             />
@@ -159,12 +142,9 @@ export default function NoteList(props) {
                             />
                         </Card.Actions>
                     </Card>
-
                 }
-
             />
         </>
-
     )
 }
 

@@ -37,7 +37,7 @@ export default function WelcomeScreen({ navigation }) {
           Login
         </Button>
 
-        <Button style={styles.signup_btn} mode="outlined" onPress={() => navigation.navigate('Home')}>
+        <Button style={styles.signup_btn} mode="outlined" onPress={() => navigation.navigate('SignUp')}>
           Sign Up
         </Button>
 
@@ -74,26 +74,26 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
   title: {
-    color: "blue",
+    color: "darkblue",
     fontWeight: 'bold',
     fontSize: 35,
     textAlign: 'center',
-    marginTop: 200,
+    marginTop: 280,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
   },
   title2: {
     color: "gray",
-    fontWeight: 'bold',
+    fontWeight: 'normal',
     textAlign: 'center',
-    margin: 5,
+    margin: 2,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
   },
   login_btn: {
-    backgroundColor: 'blue',
+    backgroundColor: 'darkblue',
     textAlign: 'center',
     fontSize: 30,
     color: 'white',

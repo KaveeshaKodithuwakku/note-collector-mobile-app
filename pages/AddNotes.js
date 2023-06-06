@@ -90,7 +90,7 @@ export default function AddNotes({ navigation,route}) {
                     showToast('Note save sucessfully');
                     clearFeilds();
                     loadData.onLoad();
-                    navigation.navigate('Home')
+                    navigation.navigate('HomeTabs')
                 })
                 .catch(function (error) {
                     console.log(error);
