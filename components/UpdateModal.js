@@ -71,7 +71,7 @@ const UpdateModal = (props) => {
 
   const getNoteById = async (id) => {
     console.log("title" + title)
-    await axios.get(`http://192.168.1.101:8080/note/get-note/${id}`)
+    await axios.get(`http://192.168.1.100:8080/note/get-note/${id}`)
       .then(response => {
         setNoteData(response.data);
         setTitle(response.data.title);
@@ -113,7 +113,7 @@ const UpdateModal = (props) => {
       favorite: favorite,
     }
 
-    axios.put(`http://192.168.1.101:8080/note/update-note-without-image/${id}`, data)
+    axios.put(`http://192.168.1.100:8080/note/update-note-without-image/${id}`, data)
       .then(response => {
         console.log('All requests were completed');
         clearFeilds();
@@ -152,7 +152,7 @@ const UpdateModal = (props) => {
     console.log("id" + id);
     axios({
       method: "put",
-      url: `http://192.168.1.101:8080/note/update-note/${id}`,
+      url: `http://192.168.1.100:8080/note/update-note/${id}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })

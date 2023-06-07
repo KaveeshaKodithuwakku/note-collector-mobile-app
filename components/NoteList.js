@@ -3,7 +3,7 @@ import { StyleSheet, FlatList,Alert } from 'react-native'
 import axios from "axios";
 import { IconButton, MD3Colors, Avatar, Card, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
@@ -35,12 +35,12 @@ export default function NoteList(props) {
     }, [refresh])
 
 
-
     const getAllNotes = async () => {
 
-        const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
+  
+        const userId = await AsyncStorage.getItem('userId');
 
-        await axios.get(`http://192.168.1.101:8080/note/get-notes-by-user-id/${userId}`)
+        await axios.get(`http://192.168.1.102:8080/note/get-notes-by-user-id/${userId}`)
             .then(response => {
                 setNoteData(response.data);
             })
@@ -52,24 +52,13 @@ export default function NoteList(props) {
             });
     }
 
-    const getFavoriteNotes = async () => {
-
-        const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
-
-        await axios.get(`http://192.168.1.101:8080/note/get-all-favorites/${userId}`)
-            .then(response => {
-                setNoteData(response.data);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }
+    
 
     const handleDeleteNote = (id, e) => {
 
         e.preventDefault();
      
-        axios.delete(`http://192.168.1.101:8080/note/delete-note/${id}`)
+        axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
             .then((response) => {
                 console.log(response.data);
                getAllNotes();

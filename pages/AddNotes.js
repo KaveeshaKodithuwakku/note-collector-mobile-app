@@ -1,16 +1,17 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ToastAndroid,BackHandler, Alert} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, TextInput } from 'react-native-paper';
 import { IconButton, MD3Colors } from 'react-native-paper';
 import { launchImageLibrary } from 'react-native-image-picker';
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function AddNotes({ navigation,route}) {
 
-    const loadData = route.params;
+
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [date, setDate] = React.useState("");
@@ -27,6 +28,20 @@ export default function AddNotes({ navigation,route}) {
     useEffect(() => {
         setDate(currDate + " " + currTime);
     }, [])
+
+    useFocusEffect(
+        React.useCallback(() => {
+          const onBackPress = () => {
+            return true;
+          };
+    
+          BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    
+          return () =>
+            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, []),
+      );
+    
 
     const handleSelectImage = async () => {
         const options = {
@@ -61,13 +76,14 @@ export default function AddNotes({ navigation,route}) {
     };
 
     const handleSave = async () => {
+        console.log("press save");
+        
         const formData = new FormData();
 
-        
-        const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
+    
+      const userId = await AsyncStorage.getItem('userId');
 
         formData.append('userId', userId)
-     //   formData.append('userId', localStorage.getItem('userId'))
         formData.append('title', title)
         formData.append('description', description)
         formData.append('dateTime', date)
@@ -81,7 +97,7 @@ export default function AddNotes({ navigation,route}) {
         if (title.trim().length > 0 || description.trim().length > 0) {
             await axios({
                 method: "post",
-                url: "http://192.168.1.101:8080/note/save-notes",
+                url: "http://192.168.1.102:8080/note/save-notes",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             })
@@ -89,8 +105,7 @@ export default function AddNotes({ navigation,route}) {
                     console.log(response.data);
                     showToast('Note save sucessfully');
                     clearFeilds();
-                    loadData.onLoad();
-                    navigation.navigate('HomeTabs')
+                   navigation.replace('HomeTabs');
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -114,7 +129,7 @@ export default function AddNotes({ navigation,route}) {
             <View style={{ backgroundColor: 'white' }}>
 
                 <View>
-                    <Text style={styles.title} variant="displayMedium">Add Note</Text>
+                    <Text style={styles.title} variant="titleLarge">Add Note</Text>
                 </View>
 
                 <View>
@@ -184,7 +199,7 @@ const styles = StyleSheet.create({
     title: {
         color: "blue",
         fontWeight: 'bold',
-        fontSize: 35,
+        fontSize: 20,
         textAlign: 'center',
         marginTop: 20,
         display: 'flex',

@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { SafeAreaView, StyleSheet, View, ImageBackground,ToastAndroid } from 'react-native'
+import { SafeAreaView, StyleSheet, View, ImageBackground, ToastAndroid } from 'react-native'
 import { Button, Divider, Text, TextInput } from 'react-native-paper'
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { auth } from '../uitilites/init-firbase';
 import { useAuth } from '../contexts/AuthContext'
 import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignUp({ navigation }) {
 
@@ -114,7 +114,7 @@ export default function SignUp({ navigation }) {
     }
 
     if (validateEmail && validatePassword && validateConfirmPassword && matchPassowrds) {
-    
+
       onSubmit(e);
     }
   };
@@ -123,64 +123,61 @@ export default function SignUp({ navigation }) {
     setEmail("");
     setPassword("");
     setConPassword("");
-}
-
-const onSubmit = async (e) => {
-  e.preventDefault()
-
-  if (email !== '' || password !== '' || conPassword !== '') {
-    if (password === conPassword) {
-      console.log(password);
-      console.log(email);
-      await createUserWithEmailAndPassword(auth, email.trim(), password.trim())
-        .then((userCredential) => {
-          // Signed in
-              const user = userCredential.user;
-              console.log(user);
-              handleClick();
-              clearFeilds();
-        })
-        .catch((error) => {
-          if (error.code === 'auth/invalid-email') {
-            ToastAndroid.show("Invalid Email", ToastAndroid.SHORT);
-          } else if (error.code === 'auth/missing-password') {
-            ToastAndroid.show("Missing Password", ToastAndroid.SHORT);
-          }
-          else {
-            ToastAndroid.show("Signup Failed", ToastAndroid.SHORT);
-          }
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-        });
-    } else {
-      console.log("mis match");
-      ToastAndroid.show("Please check your password and confirm password again...", ToastAndroid.SHORT);
-    }
-
-  } else {
-    console.log("please fill all the fields");
-    ToastAndroid.show("Please fill all the fields...", ToastAndroid.SHORT);
   }
 
-}
+  const onSubmit = async (e) => {
+    e.preventDefault()
 
+    if (email !== '' || password !== '' || conPassword !== '') {
+      if (password === conPassword) {
+        console.log(password);
+        console.log(email);
+        await createUserWithEmailAndPassword(auth, email.trim(), password.trim())
+          .then((userCredential) => {
+            const user = userCredential.user.uid;
 
-const signInFromGoogle = async () => {
-  //signInWithGoogle()
+            storeData(user);
 
-  const provider = new GoogleAuthProvider();
-  await signInWithPopup(auth, provider)
-    .then((user) => {
-      console.log(user);
-      handleClick()
-    })
-    .catch(e => console.log(e.message))
-};
+            handleClick();
+            clearFeilds();
+          })
+          .catch((error) => {
+            if (error.code === 'auth/invalid-email') {
+              ToastAndroid.show("Invalid Email", ToastAndroid.SHORT);
+            } else if (error.code === 'auth/missing-password') {
+              ToastAndroid.show("Missing Password", ToastAndroid.SHORT);
+            }
+            else {
+              ToastAndroid.show("Signup Failed", ToastAndroid.SHORT);
+            }
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode, errorMessage);
+          });
+      } else {
+        console.log("mis match");
+        ToastAndroid.show("Please check your password and confirm password again...", ToastAndroid.SHORT);
+      }
 
-function handleClick() {
-  navigation.navigate('HomeTabs')
-}
+    } else {
+      console.log("please fill all the fields");
+      ToastAndroid.show("Please fill all the fields...", ToastAndroid.SHORT);
+    }
+
+  }
+
+  function handleClick() {
+    navigation.navigate('HomeTabs');
+  }
+
+  const storeData = async (value) => {
+    try {
+      console.log(value);
+      await AsyncStorage.setItem('userId', value)
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
 
   return (
@@ -267,31 +264,9 @@ function handleClick() {
         <Button style={styles.save_btn} mode="contained" onPress={(e) => signUp(e)}>
           Sign Up
         </Button>
-{/* 
-        <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
-          <View style={{ backgroundColor: 'black', height: 1, flex: 1, alignSelf: 'center' }} />
-          <Text style={{ alignSelf: 'center', paddingHorizontal: 5, fontSize: 12 }}>Or Sign In With</Text>
-          <View style={{ backgroundColor: 'black', height: 1, flex: 1, alignSelf: 'center' }} />
-        </View> */}
 
-        {/* <View style={styles.output}>
-          {
-            chResult == true ? null : <Text style={{ color: "red" }}>Save Successfully</Text>
-          }
-        </View> */}
+        <View style={{ flexDirection: 'row' }}>
 
-
-{/*         
-        <View>
-          <Button style={styles.google_btn} mode="outlined" onPress={signInFromGoogle} >
-          <AwesomeIcon  name="google" size={18} ></AwesomeIcon >
-            Google
-          </Button>
-        </View> */}
-
-
-        <View style={{flexDirection:'row'}}>
-        
           <View style={styles.text_normal}>
             <Text>Already have an account ?</Text>
           </View>
@@ -331,7 +306,7 @@ const styles = StyleSheet.create({
     color: "gray",
     fontWeight: 'bold',
     marginLeft: 40,
-    marginBottom:30,
+    marginBottom: 30,
     display: 'flex',
   },
   save_btn: {
@@ -367,7 +342,7 @@ const styles = StyleSheet.create({
   },
   text_normal: {
     width: 200,
-    fontStyle:'normal',
+    fontStyle: 'normal',
     marginLeft: 40,
     marginTop: 10,
     display: 'flex',
@@ -381,8 +356,8 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 100,
-    marginTop:30,
-    marginBottom:30,
+    marginTop: 30,
+    marginBottom: 30,
   },
 
 })

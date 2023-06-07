@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, ToastAndroid, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, ToastAndroid, Alert,BackHandler } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, IconButton, TextInput } from 'react-native-paper';
 import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function EditNotes({ navigation, route }) {
@@ -31,6 +33,20 @@ export default function EditNotes({ navigation, route }) {
         getNoteById(noteId);
         setDate(currDate + " " + currTime);
     }, [])
+
+    useFocusEffect(
+        React.useCallback(() => {
+          const onBackPress = () => {
+            return true;
+          };
+    
+          BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    
+          return () =>
+            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, []),
+      );
+    
 
     const handleSelectImage = async () => {
         const options = {
@@ -68,7 +84,7 @@ export default function EditNotes({ navigation, route }) {
 
     const getNoteById = async (id) => {
 
-        await axios.get(`http://192.168.1.101:8080/note/get-note/${id}`)
+        await axios.get(`http://192.168.1.102:8080/note/get-note/${id}`)
             .then(response => {
                 setNoteData(response.data);
                 setTitle(response.data.title);
@@ -95,7 +111,7 @@ export default function EditNotes({ navigation, route }) {
     }
 
 
-    const updateNoteTitleAndDescription = (id) => {
+    const updateNoteTitleAndDescription = async (id) => {
     
         const data = {
           noteId: noteId,
@@ -105,7 +121,7 @@ export default function EditNotes({ navigation, route }) {
           dateTime: date,
         }
       
-        axios.put(`http://192.168.1.101:8080/note/update-note-without-image/${id}`, data)
+        await axios.put(`http://192.168.1.102:8080/note/update-note-without-image/${id}`, data)
         .then(response => {
             console.log('All requests were completed');
             clearFeilds();
@@ -125,10 +141,10 @@ export default function EditNotes({ navigation, route }) {
       
         const formData = new FormData();
 
-        const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
+          
+        const userId = await AsyncStorage.getItem('userId');
 
         formData.append('userId', userId)
-     //   formData.append('userId', localStorage.getItem('userId'))
         formData.append('title', title)
         formData.append('description', description)
         formData.append('dateTime', date)
@@ -140,9 +156,9 @@ export default function EditNotes({ navigation, route }) {
             name: image.fileName
           })
           console.log("id" + id);
-           axios({
+          await axios({
                 method: "put",
-                url: `http://192.168.1.101:8080/note/update-note/${id}`,
+                url: `http://192.168.1.102:8080/note/update-note/${id}`,
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             })

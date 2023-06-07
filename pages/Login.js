@@ -64,36 +64,27 @@ export default function Login({ navigation }) {
 
   };
 
+  const storeData = async (value) => {
+    try {
+      console.log(value);
+      await AsyncStorage.setItem('userId', value)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   const onLogin = () => {
 
     if (email.length == 0 || password.length == 0) {
-      handleClickOpen();
+      ToastAndroid.show("Fill credentials", ToastAndroid.SHORT);
     } else {
       signInWithEmailAndPassword(auth, email.trim(), password.trim())
         .then((userCredential) => {
+          const user = userCredential.user.uid;
 
-          // if (Checked) {
-          //   AsyncStorage.setItem('email', email);
-          //   AsyncStorage.setItem('password', password);
-          //   AsyncStorage.setItem('isCheked', Checked);
-          //   console.log(Checked);
-          //   console.log("email -" + localStorage.getItem('email'));
-          //   console.log("password -" + localStorage.getItem('password'));
-          //   console.log("isCheked -" + localStorage.getItem('isCheked'));
-          // } else {
-          //   AsyncStorage.setItem('email', "");
-          //   AsyncStorage.setItem('password', "");
-          //   AsyncStorage.setItem('isCheked', false);
-          //   console.log("Not Checked" + Checked);
-          //   console.log("email -" + localStorage.getItem('email'));
-          //   console.log("password -" + localStorage.getItem('password'));
-          //   console.log("isCheked -" + localStorage.getItem('isCheked'));
-          // }
-          const user = userCredential.user;
-          AsyncStorage.setItem('userId', userCredential.user.uid);
+          storeData(user);
+
           handleClick();
-          console.log(user);
-          console.log("user id" + AsyncStorage.getItem('userId'));
           clearFeilds();
         })
         .catch((error) => {
@@ -119,8 +110,8 @@ export default function Login({ navigation }) {
       sendPasswordResetEmail(auth, email.trim())
         .then(() => {
           Alert.alert(
-           "password reset email has been sent successfully"
-         )
+            "password reset email has been sent successfully"
+          )
         })
         .catch((error) => {
           console.log(error);
@@ -233,33 +224,9 @@ export default function Login({ navigation }) {
           </View>
         </View>
 
-
-
-
         <Button style={styles.save_btn} mode="contained" onPress={signIn}>
           Sign In
         </Button>
-
-        {/* <View style={{ flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
-        <View style={{ backgroundColor: 'black', height: 1, flex: 1, alignSelf: 'center' }} />
-        <Text style={{ alignSelf: 'center', paddingHorizontal: 5, fontSize: 12 }}>Or Sign In With</Text>
-        <View style={{ backgroundColor: 'black', height: 1, flex: 1, alignSelf: 'center' }} />
-      </View>  */}
-
-        {/* <View style={styles.output}>
-        {
-          chResult == true ? null : <Text style={{ color: "red" }}>Save Successfully</Text>
-        }
-      </View> */}
-
-
-
-        {/* <View>
-        <Button style={styles.google_btn} mode="outlined" onPress={signInFromGoogle} >
-        <AwesomeIcon  name="google" size={18} ></AwesomeIcon >
-          Google
-        </Button>
-      </View> */}
 
         <View style={{ flexDirection: 'row' }}>
 
@@ -303,7 +270,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 40,
     display: 'flex',
-    marginBottom:40,
+    marginBottom: 40,
   },
   save_btn: {
     backgroundColor: 'darkblue',

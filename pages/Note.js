@@ -1,10 +1,13 @@
-import { View, StyleSheet, Image, FlatList, ScrollView, Alert } from 'react-native'
+import { View, StyleSheet, Image, FlatList, ScrollView, Alert, BackHandler } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconButton, MD3Colors, Avatar, Card, Text, Searchbar, Modal } from 'react-native-paper';
 import axios from "axios";
 import AddButton from '../components/AddButton';
-import UpdateModal from '../components/UpdateModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+
+
 const containerStyle = { backgroundColor: 'white', padding: 20 };
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
@@ -19,19 +22,20 @@ export default function Note({ navigation }) {
   const [nId, setNid] = React.useState('');
 
 
-
-  const hideModal = () => {
-    setVisible(false);
-  };
-
-  const showModal = (id, e) => {
-    e.preventDefault();
-    setNid(id);
-    setVisible(true);
-  };
-
-
   const onChangeSearch = query => setSearchQuery(query);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, []),
+  );
 
   const findGreet = () => {
     const hrs = new Date().getHours();
@@ -48,9 +52,10 @@ export default function Note({ navigation }) {
 
   const getAllNotes = async () => {
 
-    const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
+const userId = await AsyncStorage.getItem('userId');
+console.log(userId);
 
-    await axios.get(`http://192.168.1.101:8080/note/get-notes-by-user-id/${userId}`)
+    await axios.get(`http://192.168.1.102:8080/note/get-notes-by-user-id/${userId}`)
       .then(response => {
         setNoteData(response.data);
       })
@@ -60,44 +65,11 @@ export default function Note({ navigation }) {
 
   }
 
-  const getNoteById = async (id) => {
-  
-    await axios.get(`http://192.168.1.101:8080/note/get-note/${id}`)
-      .then(response => {
-        setNoteData(response.data);
-        // setTitle(response.data.title);
-        // setDescription(response.data.description);
-        // setImage(response.data.image);
-        // setImageName(response.data.file_path);
-        // setPreviousImage(response.data.file_path);
-        // setFavorite(response.data.favorite);
-        console.log("title after" + title)
-      
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }
-
-
-  const getFavoriteNotes = async () => {
-
-    const userId = "gy4muQqj8DW9bpPD9oZ0GjAmKO52";
-
-    await axios.get(`http://192.168.1.101:8080/note/get-all-favorites/${userId}`)
-      .then(response => {
-        setNoteData(response.data);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }
-
-  const handleDeleteNote = (id, e) => {
+  const handleDeleteNote = async (id, e) => {
 
     e.preventDefault();
 
-    axios.delete(`http://192.168.1.101:8080/note/delete-note/${id}`)
+   await axios.delete(`http://192.168.1.102:8080/note/delete-note/${id}`)
       .then((response) => {
         console.log(response.data);
         getAllNotes();
@@ -149,7 +121,7 @@ export default function Note({ navigation }) {
         </View>
       </View>
 
-      <ScrollView style={styles.scrollView}>
+      {/* <ScrollView style={styles.scrollView}> */}
         <FlatList style={styles.noteList}
           data={noteDate}
           keyExtractor={item => item.noteId}
@@ -161,7 +133,7 @@ export default function Note({ navigation }) {
               <Text variant="bodyMedium">{item.noteId}</Text>
                 <Text variant="bodyMedium">{item.description}</Text>
               </Card.Content>
-              <Card.Cover source={{ uri: `http://192.168.1.101:8080/note/download/${item.file_path}` }} />
+              <Card.Cover source={{ uri: `http://192.168.1.102:8080/note/download/${item.file_path}` }} />
               <Card.Actions>
                 {/* <IconButton
                                 icon="heart"
@@ -201,9 +173,9 @@ export default function Note({ navigation }) {
 
           }
         />
-      </ScrollView>
+      {/* </ScrollView> */}
 
-      <AddButton onLoad={getAllNotes} />
+      <AddButton/>
 
     </SafeAreaView>
 
