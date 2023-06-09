@@ -17,17 +17,6 @@ export default function App() {
   return (
 
   <NavigationContainer>
-
-{/* 
-<Tab.Navigator>
-    <Tab.Screen options={{
-   tabBarStyle: { display: "none" },headerShown: false
-}} name="Welcome" component={WelcomeScreen} />
-    <Tab.Screen name="Note" component={Note} />
-    <Tab.Screen name="Settings" component={Settings} />
-  </Tab.Navigator>
-    */}
-
      
  <Stack.Navigator screenOptions={{
       headerStyle:{
@@ -42,8 +31,6 @@ export default function App() {
       <Stack.Screen name="Add Notes" component={AddNotes} /> 
       <Stack.Screen  name="Edit Notes" component={EditNotes} /> 
    </Stack.Navigator> 
-  
-    
 
   </NavigationContainer>
     

@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { SafeAreaView, StyleSheet, View, ImageBackground, ToastAndroid } from 'react-native'
-import { Button, Divider, Text, TextInput } from 'react-native-paper'
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { Button, Text, TextInput } from 'react-native-paper'
 import { auth } from '../uitilites/init-firbase';
 import { useAuth } from '../contexts/AuthContext'
-import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignUp({ navigation }) {
 
-  const { signInWithGoogle, register } = useAuth()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [conPassword, setConPassword] = useState('');
@@ -21,7 +19,6 @@ export default function SignUp({ navigation }) {
   const [conPwdError, setConPwdError] = useState(false);
   const [secureTextPwEntry, setSecurePwTextEntry] = useState(true);
   const [secureTextConPwEntry, setSecureConPwTextEntry] = useState(true);
-  const [chResult, setChResult] = useState(false);
 
   const validateEmail = () => {
     const strongRegex = new RegExp("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
@@ -41,9 +38,7 @@ export default function SignUp({ navigation }) {
       setChEmail(true);
       return true;
     }
-
   };
-
 
   const validatePassword = () => {
 
@@ -63,7 +58,6 @@ export default function SignUp({ navigation }) {
         return true;
       }
     }
-
   };
 
   const validateConfirmPassword = () => {
@@ -84,7 +78,6 @@ export default function SignUp({ navigation }) {
         return true;
       }
     }
-
   };
 
   const matchPassowrds = () => {
@@ -101,7 +94,6 @@ export default function SignUp({ navigation }) {
       setChConPassword(true);
       return true;
     }
-
   };
 
   const signUp = (e) => {
@@ -163,7 +155,6 @@ export default function SignUp({ navigation }) {
       console.log("please fill all the fields");
       ToastAndroid.show("Please fill all the fields...", ToastAndroid.SHORT);
     }
-
   }
 
   function handleClick() {

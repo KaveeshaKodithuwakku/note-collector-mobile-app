@@ -1,15 +1,15 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ToastAndroid,BackHandler, Alert} from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ToastAndroid, BackHandler, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, TextInput } from 'react-native-paper';
-import { IconButton, MD3Colors } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
 import { launchImageLibrary } from 'react-native-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
 
-export default function AddNotes({ navigation,route}) {
+export default function AddNotes({ navigation, route }) {
 
 
     const [title, setTitle] = React.useState("");
@@ -31,58 +31,55 @@ export default function AddNotes({ navigation,route}) {
 
     useFocusEffect(
         React.useCallback(() => {
-          const onBackPress = () => {
-            return true;
-          };
-    
-          BackHandler.addEventListener('hardwareBackPress', onBackPress);
-    
-          return () =>
-            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+            const onBackPress = () => {
+                return true;
+            };
+
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () =>
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
         }, []),
-      );
-    
+    );
+
 
     const handleSelectImage = async () => {
         const options = {
-          mediaType: 'photo',
-          selectionLimit: 1,
-          includeBase64: false,
+            mediaType: 'photo',
+            selectionLimit: 1,
+            includeBase64: false,
         }
 
         try {
-          const result = await launchImageLibrary(options);
-    
-          if (result.didCancel) {
-            console.log('Cancelled');
-          } else if (result.errorCode) {
-            console.log("code - "+result.errorCode);
-          } else if (result.errorMessage) {
-            console.log("msg - "+result.errorMessage);
-          } else if (result.assets) {
-              setImage(result.assets[0]);
-              setImageName(result.assets[0].fileName);
-          } else {
-            console.log('No assets');
-          }
+            const result = await launchImageLibrary(options);
+
+            if (result.didCancel) {
+                console.log('Cancelled');
+            } else if (result.errorCode) {
+                console.log("code - " + result.errorCode);
+            } else if (result.errorMessage) {
+                console.log("msg - " + result.errorMessage);
+            } else if (result.assets) {
+                setImage(result.assets[0]);
+                setImageName(result.assets[0].fileName);
+            } else {
+                console.log('No assets');
+            }
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
-      }
-    
+    }
+
 
     const showToast = (msg) => {
         ToastAndroid.show(msg, ToastAndroid.SHORT);
     };
 
     const handleSave = async () => {
-        console.log("press save");
-        
+
+        const userId = await AsyncStorage.getItem('userId');
+
         const formData = new FormData();
-
-    
-      const userId = await AsyncStorage.getItem('userId');
-
         formData.append('userId', userId)
         formData.append('title', title)
         formData.append('description', description)
@@ -92,7 +89,7 @@ export default function AddNotes({ navigation,route}) {
             uri: image.uri,
             type: image.type,
             name: image.fileName
-          })
+        })
 
         if (title.trim().length > 0 || description.trim().length > 0) {
             await axios({
@@ -105,7 +102,7 @@ export default function AddNotes({ navigation,route}) {
                     console.log(response.data);
                     showToast('Note save sucessfully');
                     clearFeilds();
-                   navigation.replace('HomeTabs');
+                    navigation.replace('HomeTabs');
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -140,14 +137,12 @@ export default function AddNotes({ navigation,route}) {
                     />
                 </View>
 
-
                 <View>
                     <TextInput style={styles.text_box}
                         label="Description"
                         mode='outlined'
                         multiline={true}
                         numberOfLines={5}
-                        //   value={title}
                         onChangeText={text => setDescription(text)}
                     />
                 </View>
@@ -158,7 +153,6 @@ export default function AddNotes({ navigation,route}) {
                             label="Image"
                             mode='outlined'
                             value={imageName}
-                       
                         />
                     </View>
 
@@ -181,10 +175,9 @@ export default function AddNotes({ navigation,route}) {
                 </View>
 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <ImageBackground style={styles.logo} source={require("../assets/images/note.png")} resizeMode="cover" >
-</ImageBackground>
+                    <ImageBackground style={styles.logo} source={require("../assets/images/note.png")} resizeMode="cover" >
+                    </ImageBackground>
                 </View>
-               
             </View>
 
         </SafeAreaView>

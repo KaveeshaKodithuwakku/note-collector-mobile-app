@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, FlatList,Alert } from 'react-native'
+import { StyleSheet, FlatList, Alert } from 'react-native'
 import axios from "axios";
 import { IconButton, MD3Colors, Avatar, Card, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -9,13 +9,11 @@ const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
 export default function NoteList(props) {
 
-
-    const {refresh, setRefresh } = props
     const [noteDate, setNoteData] = useState([]);
     const navigation = useNavigation();
 
     useEffect(() => {
-      
+
         if (props.type === 'normal') {
             getAllNotes();
         } else if (props.type === 'favorite') {
@@ -24,20 +22,8 @@ export default function NoteList(props) {
 
     }, [])
 
-    useEffect(() => {
-      
-        if (props.type === 'normal') {
-            getAllNotes();
-        } else if (props.type === 'favorite') {
-            getFavoriteNotes();
-        }
-
-    }, [refresh])
-
-
     const getAllNotes = async () => {
 
-  
         const userId = await AsyncStorage.getItem('userId');
 
         await axios.get(`http://192.168.1.100:8080/note/get-notes-by-user-id/${userId}`)
@@ -46,37 +32,35 @@ export default function NoteList(props) {
             })
             .catch(err => {
                 console.error(err);
-            }) 
+            })
             .finally(() => {
                 setRefresh(false);
             });
     }
 
-    
-
     const handleDeleteNote = (id, e) => {
 
         e.preventDefault();
-     
+
         axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
             .then((response) => {
                 console.log(response.data);
-               getAllNotes();
+                getAllNotes();
             })
             .catch(function (error) {
                 console.log(error);
             });
     }
 
-    const handleDeleteIconPress = (nId,e) => {
-      Alert.alert(
+    const handleDeleteIconPress = (nId, e) => {
+        Alert.alert(
             "Delete Note..!",
             "Are you sure ?",
             [
                 {
                     text: "Yes",
                     onPress: () => {
-                        handleDeleteNote(nId,e);
+                        handleDeleteNote(nId, e);
                     },
                 },
                 {
@@ -90,7 +74,6 @@ export default function NoteList(props) {
     return (
 
         <>
-
             <FlatList style={styles.noteList}
                 data={noteDate}
                 keyExtractor={item => item.noteId}
@@ -116,18 +99,18 @@ export default function NoteList(props) {
                                 mode='outlined'
                                 iconColor={MD3Colors.error50}
                                 size={20}
-                                onPress={() =>  {
+                                onPress={() => {
                                     navigation.navigate('Edit Notes', {
-                                      itemId:  item.noteId,
+                                        itemId: item.noteId,
                                     });
-                                  }}
+                                }}
                             />
                             <IconButton
                                 icon="delete"
                                 mode='outlined'
                                 iconColor={MD3Colors.error50}
                                 size={20}
-                                onPress={(e) => handleDeleteIconPress( item.noteId,e)}
+                                onPress={(e) => handleDeleteIconPress(item.noteId, e)}
                             />
                         </Card.Actions>
                     </Card>

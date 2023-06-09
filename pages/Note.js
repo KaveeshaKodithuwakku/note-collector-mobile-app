@@ -1,30 +1,18 @@
-import { View, StyleSheet, Image, FlatList, ScrollView, Alert, BackHandler, TextInput } from 'react-native'
+import { View, StyleSheet, FlatList, Alert, BackHandler} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { IconButton, MD3Colors, Avatar, Card, Text, Searchbar, Modal } from 'react-native-paper';
+import { IconButton, MD3Colors, Avatar, Card, Text, Searchbar } from 'react-native-paper';
 import axios from "axios";
 import AddButton from '../components/AddButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
-import { transparent } from 'react-native-paper/lib/typescript/src/styles/themes/v2/colors';
-
-
-const containerStyle = { backgroundColor: 'white', padding: 20 };
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
 export default function Note({ navigation }) {
 
   const [greet, setGreet] = useState('');
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [isExtended, setIsExtended] = React.useState(true);
   const [noteDate, setNoteData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
-  const [visible, setVisible] = React.useState(false);
-  const [nId, setNid] = React.useState('');
-
-
-  const onChangeSearch = query => setSearchQuery(query);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -60,17 +48,14 @@ export default function Note({ navigation }) {
   const getAllNotes = async () => {
 
     const userId = await AsyncStorage.getItem('userId');
-    console.log(userId);
 
     await axios.get(`http://192.168.1.100:8080/note/get-notes-by-user-id/${userId}`)
       .then(response => {
         setNoteData(response.data);
-        setFilterData(response.data);
       })
       .catch(err => {
         console.error(err);
       })
-
   }
 
   const handleDeleteNote = async (id, e) => {
@@ -105,8 +90,6 @@ export default function Note({ navigation }) {
     );
   }
 
-
-
   const searchFilter = (text) => {
     if (text) {
       const newData = noteDate.filter((item) => {
@@ -127,14 +110,13 @@ export default function Note({ navigation }) {
         </View>
 
         <View style={styles.serach_container}>
-  
+
           <Searchbar style={{ backgroundColor: 'white', borderColor: 'gray', borderWidth: 0.5, height: 52 }}
             placeholder="Search"
             onChangeText={(text) => searchFilter(text)}
           />
         </View>
       </View>
-
 
       <FlatList style={styles.noteList}
         data={noteDate}
@@ -144,7 +126,6 @@ export default function Note({ navigation }) {
           <Card mode='elevated' style={styles.shadowProp}>
             <Card.Title title={item.title} subtitle={item.dateTime} left={LeftContent} />
             <Card.Content>
-              {/* <Text variant="bodyMedium">{item.noteId}</Text> */}
               <Text variant="bodyMedium">{item.description}</Text>
             </Card.Content>
             <Card.Cover source={{ uri: `http://192.168.1.100:8080/note/download/${item.file_path}` }} />
@@ -161,7 +142,7 @@ export default function Note({ navigation }) {
                   });
                 }}
               />
- 
+
               <IconButton
                 icon="delete"
                 mode='outlined'
@@ -230,13 +211,13 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
   },
-  textInputStyle:{
-    width:200,
-    height:40,
-    borderWidth:1,
-    paddingLeft:20,
-    margin:5,
-    borderColor:"gray",
-    backgroundColor:'white',
+  textInputStyle: {
+    width: 200,
+    height: 40,
+    borderWidth: 1,
+    paddingLeft: 20,
+    margin: 5,
+    borderColor: "gray",
+    backgroundColor: 'white',
   }
 })

@@ -1,7 +1,6 @@
 import { View, StyleSheet, SafeAreaView, ImageBackground, TouchableOpacity, ToastAndroid, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { Button, Checkbox, Divider, Text, TextInput } from 'react-native-paper'
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { Button, Checkbox, Text, TextInput } from 'react-native-paper'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../contexts/AuthContext';
 import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
@@ -39,9 +38,7 @@ export default function Login({ navigation }) {
       setChEmail(true);
       return true;
     }
-
   };
-
 
   const validatePassword = () => {
 
@@ -61,7 +58,6 @@ export default function Login({ navigation }) {
         return true;
       }
     }
-
   };
 
   const storeData = async (value) => {
@@ -204,7 +200,7 @@ export default function Login({ navigation }) {
         </View>
 
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-
+{/* 
           <View style={styles.checkbox_remember}>
             <TouchableOpacity>
               <Checkbox
@@ -213,11 +209,11 @@ export default function Login({ navigation }) {
               />
             </TouchableOpacity>
 
-          </View>
+          </View> */}
 
-          <View>
+          {/* <View>
             <Text style={styles.text_remember} >Remember Me</Text>
-          </View>
+          </View> */}
 
           <View>
             <Text variant="labelLarge" style={styles.text_forgot} onPress={forgotPassword}>Forgot Password?</Text>
@@ -334,7 +330,7 @@ const styles = StyleSheet.create({
     color: "darkblue",
     fontSize: 12,
     width: 200,
-    display: 'flex',
+    marginLeft:300,
     marginTop: 10,
   },
   logo: {

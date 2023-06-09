@@ -2,71 +2,50 @@ import { View, StyleSheet, ImageBackground, StatusBar } from 'react-native';
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Text } from 'react-native-paper';
-import LinearGradient from 'react-native-linear-gradient';
 import back from "../assets/images/Background_1.jpg"
 
 
 export default function WelcomeScreen({ navigation }) {
   return (
 
-    <ImageBackground source={back} style={{flex:1}}>
-<SafeAreaView>
+    <ImageBackground source={back} style={{ flex: 1 }}>
+      <SafeAreaView>
 
-<StatusBar
-  animated={true}
-  backgroundColor="#00134d"
-/>
-{/* 
-  <View style={styles.container}>
-       <ImageBackground style={styles.logo} source={require("../assets/images/welocme-img.png")} resizeMode="cover" >
+        <StatusBar
+          animated={true}
+          backgroundColor="#00134d"
+        />
 
-        </ImageBackground>
-       </View> */}
+        <View>
+          <Text style={styles.title} variant="displayMedium">My Notes !</Text>
+        </View>
+
+        <View>
+          <Text style={styles.title2} variant="titleSmall">Best place to store your notes and life events</Text>
+        </View>
+
+        <View >
+          <Button style={styles.login_btn} mode="contained" onPress={() => navigation.navigate('Login')}>
+            Login
+          </Button>
+
+          <Button style={styles.signup_btn} mode="outlined" onPress={() => navigation.navigate('SignUp')}>
+            Sign Up
+          </Button>
+
+        </View>
 
 
-<View>
-        <Text style={styles.title} variant="displayMedium">My Notes !</Text>
-      </View>
-
-      <View>
-        <Text style={styles.title2} variant="titleSmall">Best place to store your notes and life events</Text>
-      </View>
-
-      <View >
-        <Button style={styles.login_btn} mode="contained" onPress={() => navigation.navigate('Login')}>
-          Login
-        </Button>
-
-        <Button style={styles.signup_btn} mode="outlined" onPress={() => navigation.navigate('SignUp')}>
-          Sign Up
-        </Button>
-
-      </View> 
- 
-
-</SafeAreaView>
+      </SafeAreaView>
     </ImageBackground>
-    
-
-      //  <View style={styles.container}>
-      //   <ImageBackground style={styles.logo} source={require("../assets/images/welocme-img.png")} resizeMode="cover" >
-
-      //   </ImageBackground>
-      // </View>
-
-
-   
-
-
-
   )
 }
 
 const styles = StyleSheet.create({
 
   container: {
-    
-   height:'100%'
+
+    height: '100%'
   },
   logo: {
     width: 300,
