@@ -39,7 +39,7 @@ export default function App() {
       <Stack.Screen options={{headerShown: false}} name="Login" component={Login} />
       <Stack.Screen options={{headerShown: false}} name="SignUp" component={SignUp} />
       <Stack.Screen options={{headerShown: false}}  name="HomeTabs" component={HomeTabs} /> 
-      <Stack.Screen  name="Add Notes" component={AddNotes} /> 
+      <Stack.Screen name="Add Notes" component={AddNotes} /> 
       <Stack.Screen  name="Edit Notes" component={EditNotes} /> 
    </Stack.Navigator> 
   

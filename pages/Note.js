@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, FlatList, ScrollView, Alert, BackHandler } from 'react-native'
+import { View, StyleSheet, Image, FlatList, ScrollView, Alert, BackHandler, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconButton, MD3Colors, Avatar, Card, Text, Searchbar, Modal } from 'react-native-paper';
@@ -6,6 +6,7 @@ import axios from "axios";
 import AddButton from '../components/AddButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { transparent } from 'react-native-paper/lib/typescript/src/styles/themes/v2/colors';
 
 
 const containerStyle = { backgroundColor: 'white', padding: 20 };
@@ -18,6 +19,7 @@ export default function Note({ navigation }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [isExtended, setIsExtended] = React.useState(true);
   const [noteDate, setNoteData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [visible, setVisible] = React.useState(false);
   const [nId, setNid] = React.useState('');
 
@@ -49,15 +51,21 @@ export default function Note({ navigation }) {
     }
   }
 
+  useEffect(() => {
+    findGreet();
+    getAllNotes();
+  }, [])
+
 
   const getAllNotes = async () => {
 
-const userId = await AsyncStorage.getItem('userId');
-console.log(userId);
+    const userId = await AsyncStorage.getItem('userId');
+    console.log(userId);
 
-    await axios.get(`http://192.168.1.102:8080/note/get-notes-by-user-id/${userId}`)
+    await axios.get(`http://192.168.1.100:8080/note/get-notes-by-user-id/${userId}`)
       .then(response => {
         setNoteData(response.data);
+        setFilterData(response.data);
       })
       .catch(err => {
         console.error(err);
@@ -69,7 +77,7 @@ console.log(userId);
 
     e.preventDefault();
 
-   await axios.delete(`http://192.168.1.102:8080/note/delete-note/${id}`)
+    await axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
       .then((response) => {
         console.log(response.data);
         getAllNotes();
@@ -98,11 +106,17 @@ console.log(userId);
   }
 
 
-  useEffect(() => {
-    findGreet();
-    getAllNotes();
-  }, [])
 
+  const searchFilter = (text) => {
+    if (text) {
+      const newData = noteDate.filter((item) => {
+        return item.title.toLowerCase().includes(text.toLowerCase());
+      });
+      setNoteData(newData);
+    } else {
+      getAllNotes();
+    }
+  }
 
   return (
 
@@ -113,73 +127,57 @@ console.log(userId);
         </View>
 
         <View style={styles.serach_container}>
+  
           <Searchbar style={{ backgroundColor: 'white', borderColor: 'gray', borderWidth: 0.5, height: 52 }}
             placeholder="Search"
-            onChangeText={onChangeSearch}
-            value={searchQuery}
+            onChangeText={(text) => searchFilter(text)}
           />
         </View>
       </View>
 
-      {/* <ScrollView style={styles.scrollView}> */}
-        <FlatList style={styles.noteList}
-          data={noteDate}
-          keyExtractor={item => item.noteId}
-          renderItem={({ item }) =>
 
-            <Card mode='elevated' style={styles.shadowProp}>
-              <Card.Title title={item.title} subtitle={item.dateTime} left={LeftContent} />
-              <Card.Content>
-              <Text variant="bodyMedium">{item.noteId}</Text>
-                <Text variant="bodyMedium">{item.description}</Text>
-              </Card.Content>
-              <Card.Cover source={{ uri: `http://192.168.1.102:8080/note/download/${item.file_path}` }} />
-              <Card.Actions>
-                {/* <IconButton
-                                icon="heart"
-                                mode='outlined'
-                                iconColor={MD3Colors.error50}
-                                size={20}
-                                onPress={() => console.log('Pressed')}
-                            /> */}
+      <FlatList style={styles.noteList}
+        data={noteDate}
+        keyExtractor={item => item.noteId}
+        renderItem={({ item }) =>
 
+          <Card mode='elevated' style={styles.shadowProp}>
+            <Card.Title title={item.title} subtitle={item.dateTime} left={LeftContent} />
+            <Card.Content>
+              {/* <Text variant="bodyMedium">{item.noteId}</Text> */}
+              <Text variant="bodyMedium">{item.description}</Text>
+            </Card.Content>
+            <Card.Cover source={{ uri: `http://192.168.1.100:8080/note/download/${item.file_path}` }} />
+            <Card.Actions>
 
-              
-                <IconButton
-                  icon="pen"
-                  mode='outlined'
-                  iconColor={MD3Colors.error50}
-                  size={20}
-                  onPress={() => {
-                    /* 1. Navigate to the Details route with params */
-                    navigation.navigate('Edit Notes', {
-                      itemId: item.noteId,
-                    });
-                  }}
-                  // onPress={(e) => showModal(item.noteId, e)}
-                />
-{/* <UpdateModal visible={visible} onDismiss={hideModal} noteId={nId} onLoad={getAllNotes} pTitle={item.title} pDes={item.description} pImage={item.file_path}/> */}
+              <IconButton
+                icon="pen"
+                mode='outlined'
+                iconColor={MD3Colors.error50}
+                size={20}
+                onPress={() => {
+                  navigation.navigate('Edit Notes', {
+                    itemId: item.noteId,
+                  });
+                }}
+              />
+ 
+              <IconButton
+                icon="delete"
+                mode='outlined'
+                iconColor={MD3Colors.error50}
+                size={20}
+                onPress={(e) => handleDeleteIconPress(item.noteId, e)}
+              />
 
-                <IconButton
-                  icon="delete"
-                  mode='outlined'
-                  iconColor={MD3Colors.error50}
-                  size={20}
-                  onPress={(e) => handleDeleteIconPress(item.noteId, e)}
-                />
+            </Card.Actions>
+          </Card>
+        }
+      />
 
-              </Card.Actions>
-            </Card>
-
-          }
-        />
-      {/* </ScrollView> */}
-
-      <AddButton/>
+      <AddButton />
 
     </SafeAreaView>
-
-
   )
 }
 
@@ -231,5 +229,14 @@ const styles = StyleSheet.create({
   noteList: {
     marginLeft: 20,
     marginRight: 20,
+  },
+  textInputStyle:{
+    width:200,
+    height:40,
+    borderWidth:1,
+    paddingLeft:20,
+    margin:5,
+    borderColor:"gray",
+    backgroundColor:'white',
   }
 })

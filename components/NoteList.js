@@ -40,7 +40,7 @@ export default function NoteList(props) {
   
         const userId = await AsyncStorage.getItem('userId');
 
-        await axios.get(`http://192.168.1.102:8080/note/get-notes-by-user-id/${userId}`)
+        await axios.get(`http://192.168.1.100:8080/note/get-notes-by-user-id/${userId}`)
             .then(response => {
                 setNoteData(response.data);
             })
