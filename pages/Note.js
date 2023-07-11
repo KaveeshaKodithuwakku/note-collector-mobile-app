@@ -49,7 +49,7 @@ export default function Note({ navigation }) {
 
     const userId = await AsyncStorage.getItem('userId');
 
-    await axios.get(`http://192.168.1.100:8080/note/get-notes-by-user-id/${userId}`)
+    await axios.get(`note/get-all`)
       .then(response => {
         setNoteData(response.data);
       })
@@ -62,7 +62,7 @@ export default function Note({ navigation }) {
 
     e.preventDefault();
 
-    await axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
+    await axios.delete(`note/delete-note/${id}`)
       .then((response) => {
         console.log(response.data);
         getAllNotes();
@@ -128,7 +128,7 @@ export default function Note({ navigation }) {
             <Card.Content>
               <Text variant="bodyMedium">{item.description}</Text>
             </Card.Content>
-            <Card.Cover source={{ uri: `http://192.168.1.100:8080/note/download/${item.file_path}` }} />
+            <Card.Cover source={{ uri: axios.defaults.baseURL + `note/download/${item.file_path}` }} />
             <Card.Actions>
 
               <IconButton

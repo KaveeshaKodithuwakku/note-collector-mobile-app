@@ -25,8 +25,8 @@ export default function NoteList(props) {
     const getAllNotes = async () => {
 
         const userId = await AsyncStorage.getItem('userId');
-
-        await axios.get(`http://192.168.1.100:8080/note/get-notes-by-user-id/${userId}`)
+console.log("888888888"+userId)
+        await axios.get(`note/get-notes-by-user-id/${userId}`)
             .then(response => {
                 setNoteData(response.data);
             })
@@ -42,7 +42,7 @@ export default function NoteList(props) {
 
         e.preventDefault();
 
-        axios.delete(`http://192.168.1.100:8080/note/delete-note/${id}`)
+        axios.delete(`note/delete-note/${id}`)
             .then((response) => {
                 console.log(response.data);
                 getAllNotes();
@@ -85,7 +85,7 @@ export default function NoteList(props) {
                             <Text variant="titleLarge">{item.title}</Text>
                             <Text variant="bodyMedium">{item.description}</Text>
                         </Card.Content>
-                        <Card.Cover source={{ uri: axios.defaults.baseURL + 'http://192.168.1.100:8080/note/download/' + item.image }} />
+                        <Card.Cover source={{ uri: axios.defaults.baseURL + 'api/v1/note/download/' + item.image }} />
                         <Card.Actions>
                             <IconButton
                                 icon="heart"

@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { SafeAreaView, StyleSheet, View, ImageBackground, ToastAndroid } from 'react-native'
 import { Button, Text, TextInput } from 'react-native-paper'
 import { auth } from '../uitilites/init-firbase';
-import { useAuth } from '../contexts/AuthContext'
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignUp({ navigation }) {
@@ -181,7 +180,7 @@ export default function SignUp({ navigation }) {
         </View>
 
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <ImageBackground style={styles.logo} source={require("../assets/images/login.png")} resizeMode="cover" >
+          <ImageBackground style={styles.logo} source={require("../assets/images/test.png")} resizeMode="cover" >
           </ImageBackground>
         </View>
 
@@ -345,8 +344,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   logo: {
-    width: 150,
-    height: 100,
+    width: 200,
+    height: 120,
     marginTop: 30,
     marginBottom: 30,
   },

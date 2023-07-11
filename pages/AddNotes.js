@@ -94,7 +94,7 @@ export default function AddNotes({ navigation, route }) {
         if (title.trim().length > 0 || description.trim().length > 0) {
             await axios({
                 method: "post",
-                url: "http://192.168.1.100:8080/note/save-notes",
+                url: "note/save-notes",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             })

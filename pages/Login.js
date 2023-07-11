@@ -6,8 +6,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../uitilites/init-firbase';
 
-
-TouchableOpacity
 export default function Login({ navigation }) {
 
   const { signInWithGoogle, register } = useAuth()
@@ -155,7 +153,7 @@ export default function Login({ navigation }) {
         </View>
 
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <ImageBackground style={styles.logo} source={require("../assets/images/login.png")} resizeMode="cover" >
+          <ImageBackground style={styles.logo} source={require("../assets/images/test.png")} resizeMode="cover" >
           </ImageBackground>
         </View>
 
@@ -334,8 +332,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   logo: {
-    width: 150,
-    height: 100,
+    width: 200,
+    height: 120,
     marginTop: 30,
     marginBottom: 30,
   },

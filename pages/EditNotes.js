@@ -82,7 +82,7 @@ export default function EditNotes({ navigation, route }) {
 
   const getNoteById = async (id) => {
 
-    await axios.get(`http://192.168.1.100:8080/note/get-note/${id}`)
+    await axios.get(`note/get-note/${id}`)
       .then(response => {
         setNoteData(response.data);
         setTitle(response.data.title);
@@ -118,7 +118,7 @@ export default function EditNotes({ navigation, route }) {
       dateTime: date,
     }
 
-    await axios.put(`http://192.168.1.100:8080/note/update-note-without-image/${id}`, data)
+    await axios.put(`note/update-note-without-image/${id}`, data)
       .then(response => {
         console.log('All requests were completed');
         clearFeilds();
@@ -150,7 +150,7 @@ export default function EditNotes({ navigation, route }) {
     console.log("id" + id);
     await axios({
       method: "put",
-      url: `http://192.168.1.100:8080/note/update-note/${id}`,
+      url: `note/update-note/${id}`,
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
